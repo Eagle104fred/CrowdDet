@@ -20,7 +20,7 @@ def inference(args, config, network):
     net = network()
     net.eval()
     check_point = torch.load(model_file, map_location=torch.device('cpu'))
-    net.load_state_dict(check_point['state_dict'])
+    net.load_state_dict(check_point['state_dict'])#导入训练好的模型参数
     # get data
     image, resized_img, im_info = get_data(
             args.img_path, config.eval_image_short_size, config.eval_image_max_size) 

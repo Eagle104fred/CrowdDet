@@ -28,7 +28,7 @@ class Train_config:
     log_path = ''
 
 def do_train_epoch(net, data_iter, optimizer, rank, epoch, train_config):
-    if rank == 0:
+    if rank == 0:#（如果是单GPU）
         fid_log = open(train_config.log_path,'a')
     if epoch >= train_config.lr_decay[0]:
         for param_group in optimizer.param_groups:
@@ -72,7 +72,7 @@ def do_train_epoch(net, data_iter, optimizer, rank, epoch, train_config):
     if rank == 0:
         fid_log.close()
 
-def train_worker(rank, train_config, network, config):
+def train_worker(rank, train_config, network, config):#具体训练函数
     # set the parallel
     torch.distributed.init_process_group(backend='nccl',
         init_method='env://', world_size=train_config.world_size, rank=rank)
@@ -96,7 +96,7 @@ def train_worker(rank, train_config, network, config):
         check_point = torch.load(model_file, map_location=torch.device('cpu'))
         net.load_state_dict(check_point['state_dict'])
         begin_epoch = train_config.resume_weights + 1
-    # using distributed data parallel
+    # using distributed data parallel（数据并行）
     net = torch.nn.parallel.DistributedDataParallel(net, device_ids=[rank], broadcast_buffers=False)
     # build data provider
     crowdhuman = CrowdHuman(config, if_train=True)
@@ -116,7 +116,7 @@ def train_worker(rank, train_config, network, config):
                 optimizer = optimizer.state_dict())
             torch.save(model,fpath)
 
-def multi_train(params, config, network):
+def multi_train(params, config, network):#多进程训练函数
     # check gpus
     if not torch.cuda.is_available():
         print('No GPU exists!')

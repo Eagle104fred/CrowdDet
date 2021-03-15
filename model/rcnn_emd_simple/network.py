@@ -59,7 +59,7 @@ class RCNN(nn.Module):
         for l in [self.fc1, self.fc2]:
             nn.init.kaiming_uniform_(l.weight, a=1)
             nn.init.constant_(l.bias, 0)
-        # box predictor
+        # box predictor(相比起resnet版本这里同时输出两个pred）
         self.emd_pred_cls_0 = nn.Linear(1024, config.num_classes)
         self.emd_pred_delta_0 = nn.Linear(1024, config.num_classes * 4)
         self.emd_pred_cls_1 = nn.Linear(1024, config.num_classes)

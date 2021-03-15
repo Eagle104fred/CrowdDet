@@ -1,7 +1,7 @@
 import torch
 
 from config import config
-
+#rcnn_fpn_bassline
 def softmax_loss(score, label, ignore_label=-1):
     with torch.no_grad():
         max_score = score.max(axis=1, keepdims=True)[0]
@@ -33,7 +33,7 @@ def focal_loss(inputs, targets, alpha=-1, gamma=2):
     neg_loss = (targets != class_range) * neg_pred * (1 - alpha)
     loss = -(pos_loss + neg_loss)
     return loss.sum(axis=1)
-
+#rcnn_emd_simple
 def emd_loss_softmax(p_b0, p_s0, p_b1, p_s1, targets, labels):
     # reshape
     pred_delta = torch.cat([p_b0, p_b1], axis=1).reshape(-1, p_b0.shape[-1])
